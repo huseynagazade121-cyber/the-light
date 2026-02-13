@@ -2,120 +2,191 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <title>Sənin üçün...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ulduzlararası Məktub</title>
     <style>
-        body {
+        body, html {
             margin: 0;
-            background-color: #050505;
-            color: white;
-            font-family: 'Georgia', serif;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* YouTube Arxa Fonu */
+        .video-foreground, .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        #bgVideo {
+            filter: blur(30px) brightness(0.3); /* Başlanğıcda qaranlıq və bulanıq */
+            transition: filter 5s ease, transform 10s ease;
+        }
+
+        /* Giriş Ekranı */
+        #overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            z-index: 100;
             cursor: pointer;
-        }
-
-        #overlay {
-            position: absolute;
+            color: white;
+            transition: opacity 3s ease;
             text-align: center;
-            transition: opacity 2s;
         }
 
+        .pulse {
+            animation: pulse-animation 2s infinite;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        @keyframes pulse-animation {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        /* Mesajlar */
         #content {
-            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            max-width: 80%;
-            line-height: 1.8;
-            font-size: 22px;
+            width: 85%;
+            color: white;
+            z-index: 50;
+        }
+
+        .message {
+            font-size: 24px;
+            font-weight: 300;
             opacity: 0;
-            transition: opacity 3s;
+            display: none;
+            transition: opacity 2.5s ease;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
         }
 
-        .typewriter {
-            display: inline-block;
-            border-right: 2px solid white;
-            white-space: nowrap;
-            overflow: hidden;
-            animation: blink 0.75s step-end infinite;
-        }
-
-        @keyframes blink { from, to { border-color: transparent } 50% { border-color: white } }
-        
         #timer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #888;
+            position: absolute;
+            bottom: 40px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: monospace;
+            font-size: 13px;
+            letter-spacing: 4px;
         }
     </style>
 </head>
-<body onclick="startExperience()">
+<body onclick="launchSequence()">
 
     <div id="overlay">
-        <p>İşığı yandırmaq üçün bir dəfə toxun...</p>
+        <div class="pulse">SİSTEMLƏRİ AKTİVLƏŞDİRMƏK ÜÇÜN TOXUN...</div>
+    </div>
+
+    <div class="video-background">
+        <div class="video-foreground">
+            <iframe id="bgVideo"
+                src="https://www.youtube.com/embed/hmzPJmVX9D4?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=hmzPJmVX9D4"
+                frameborder="0" allow="autoplay; encrypted-media" 
+                style="width: 100vw; height: 100vh; transform: scale(1.3);">
+            </iframe>
+        </div>
     </div>
 
     <div id="content">
-        <div id="text-container"></div>
-        <div id="timer">Sən gedəndən bəri: <span id="seconds">0</span> saniyə keçdi...</div>
+        <p id="msg1" class="message">"Departing from Hazi Aslanov. Destination: Mardakan."</p>
+        <p id="msg2" class="message">Sən gedəndən bəri elə bil sinfin işığı sönüb...</p>
+        <p id="msg3" class="message">Amma ulduzlar hər yerdə eynidir.</p>
+        <p id="msg4" class="message">Nə vaxt tənha hiss etsən, pəncərədən çölə bax.</p>
+        <p id="msg5" class="message">Mən həmişə o ulduzların birində səni gözləyirəm.</p>
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        </audio>
+    <div id="timer">MISSION TIME: <span id="clock">00:00:00</span></div>
+
+    <audio id="passacaglia" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        let started = false;
-        const messages = [
-            "Bakıda hava bəlkə də səs-küylüdür...",
-            "Amma burada, sənin oturduğun partada artıq günəş də eyni cür doğmur.",
-            "Sən gedəndən bəri elə bil sinfin işığı sönüb...",
-            "Bizim bütün enerjimiz səninlə Bakıya köçüb.",
-            "Nə vaxt özünü tənha hiss etsən, bura bax.",
-            "Məsafələr sadəcə rəqəmdir, sən həmişə buradasan."
-        ];
+        let sequenceStarted = false;
 
-        function startExperience() {
-            if (started) return;
-            started = true;
+        function launchSequence() {
+            if (sequenceStarted) return;
+            sequenceStarted = true;
 
+            // Giriş ekranını yox et
             document.getElementById('overlay').style.opacity = '0';
+            
             setTimeout(() => {
                 document.getElementById('overlay').style.display = 'none';
-                const content = document.getElementById('content');
-                content.style.display = 'block';
-                setTimeout(() => content.style.opacity = '1', 100);
                 
-                document.getElementById('bgMusic').play();
-                startTypewriter(0);
-                startCounter();
+                // Göz açılma effekti (Blur gedir)
+                const video = document.getElementById('bgVideo');
+                video.style.filter = 'blur(0px) brightness(0.7)';
+                video.style.transform = 'scale(1.1)';
+
+                // Musiqini başlat
+                const music = document.getElementById('passacaglia');
+                music.volume = 0;
+                music.play();
+                
+                // Musiqinin səsini yavaş-yavaş artır (Fade-in)
+                let vol = 0;
+                let interval = setInterval(() => {
+                    if (vol < 0.5) {
+                        vol += 0.05;
+                        music.volume = vol;
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 200);
+
+                showMessages(1);
+                startMissionTimer();
             }, 2000);
         }
 
-        function startTypewriter(index) {
-            if (index < messages.length) {
-                const container = document.getElementById('text-container');
-                container.innerHTML = `<p class="typewriter" id="msg-${index}"></p>`;
-                const msgElement = document.getElementById(`msg-${index}`);
-                let charIndex = 0;
+        function showMessages(num) {
+            if (num <= 5) {
+                let msg = document.getElementById('msg' + num);
+                msg.style.display = 'block';
+                setTimeout(() => msg.style.opacity = '1', 100);
                 
-                const interval = setInterval(() => {
-                    msgElement.textContent += messages[index][charIndex];
-                    charIndex++;
-                    if (charIndex === messages[index].length) {
-                        clearInterval(interval);
-                        setTimeout(() => startTypewriter(index + 1), 3000);
-                    }
-                }, 100);
+                setTimeout(() => {
+                    msg.style.opacity = '0';
+                    setTimeout(() => {
+                        msg.style.display = 'none';
+                        showMessages(num + 1);
+                    }, 2500);
+                }, 5000);
             }
         }
 
-        function startCounter() {
-            let sec = 0;
+        function startMissionTimer() {
+            let start = Date.now();
             setInterval(() => {
-                sec++;
-                document.getElementById('seconds').innerText = sec;
+                let delta = Date.now() - start;
+                let h = Math.floor(delta / 3600000).toString().padStart(2, '0');
+                let m = Math.floor((delta % 3600000) / 60000).toString().padStart(2, '0');
+                let s = Math.floor((delta % 60000) / 1000).toString().padStart(2, '0');
+                document.getElementById('clock').innerText = `${h}:${m}:${s}`;
             }, 1000);
         }
     </script>
