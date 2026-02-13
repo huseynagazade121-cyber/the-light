@@ -3,104 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ulduzlararası Məktub</title>
+    <title>AURA 1.0 - Ulduzlararası</title>
     <style>
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            overflow: hidden;
-            background-color: #000; /* Video yüklənənə qədər tam qara */
+            background: #000;
+            color: white;
             font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
         }
 
-        /* Video üçün konteyner */
-        .video-background {
+        #star-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            background: radial-gradient(circle, #1b2735 0%, #090a0f 100%); /* Ehtiyat fon */
-        }
-
-        #bgVideo {
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            filter: brightness(0.4) blur(10px);
-            transition: filter 4s ease;
         }
 
         #overlay {
             position: fixed;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,1);
             display: flex; justify-content: center; align-items: center;
-            z-index: 100; cursor: pointer; color: #fff;
-            text-align: center; transition: opacity 2s;
+            z-index: 100; cursor: pointer;
+            transition: opacity 3s;
         }
 
         #content {
             position: absolute;
-            top: 45%; left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            text-align: center; width: 80%;
-            color: #00ffcc; /* Kosmik yaşıl/mavi ton */
+            text-align: center; width: 85%;
             z-index: 50;
-            text-shadow: 0 0 10px rgba(0,255,204,0.5);
         }
 
         .message {
             font-size: 22px; opacity: 0; display: none;
             transition: opacity 2s ease;
+            text-shadow: 0 0 15px #00ffcc;
+            color: #00ffcc;
         }
 
         #timer {
             position: absolute; bottom: 20px; width: 100%;
-            text-align: center; color: #555; font-size: 12px;
+            text-align: center; color: #444; font-size: 12px;
             letter-spacing: 5px;
         }
     </style>
 </head>
 <body onclick="startVoyage()">
 
-    <div id="overlay" id="intro">
-        <div>
-            <h1 style="letter-spacing: 10px;">AURA 1.0</h1>
-            <p>SİSTEMİ OYATMAQ ÜÇÜN EKRANA TOXUN</p>
+    <div id="overlay">
+        <div style="text-align: center;">
+            <h1 style="letter-spacing: 15px; color: #00ffcc;">AURA 1.0</h1>
+            <p style="color: #666;">SİSTEMİ BAŞLATMAQ ÜÇÜN TOXUN</p>
         </div>
     </div>
 
-    <div class="video-background">
-        <iframe id="bgVideo" 
-            src="https://www.youtube.com/embed/hmzPJmVX9D4?controls=0&showinfo=0&rel=0&autoplay=1&loop=1&mute=1&playlist=hmzPJmVX9D4&enablejsapi=1" 
-            frameborder="0" allow="autoplay; encrypted-media">
-        </iframe>
-    </div>
+    <canvas id="star-canvas"></canvas>
 
     <div id="content">
-        <p id="msg1" class="message">> INITIALIZING JUMP TO MARDAKAN...</p>
+        <p id="msg1" class="message">> INITIALIZING SPACE JUMP...</p>
         <p id="msg2" class="message">> Sən gedəndən bəri elə bil sinfin işığı sönüb...</p>
         <p id="msg3" class="message">> Bura çox səssizdir, Leyla.</p>
-        <p id="msg4" class="message">> Amma bu saniyələr səni geri gətirir.</p>
-        <p id="msg5" class="message">> Məsafələr sadəcə kod xətasıdır.</p>
+        <p id="msg4" class="message">> Amma bu saniyələr səni mənə yaxınlaşdırır.</p>
+        <p id="msg5" class="message">> Məsafələr sadəcə bir illüziyadır.</p>
     </div>
 
-    <div id="timer">MISSION ELAPSED: <span id="clock">00:00:00</span></div>
+    <div id="timer">MISSION TIME: <span id="clock">00:00:00</span></div>
 
     <audio id="passacaglia" loop>
         <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" type="audio/mpeg">
     </audio>
 
     <script>
+        // --- ULDUZ SİSTEMİ KODU ---
+        const canvas = document.getElementById('star-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let speed = 0.2;
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.onresize = resize;
+        resize();
+
+        for(let i=0; i<400; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2,
+                vel: Math.random() * 2 + 0.5
+            });
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(s => {
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+                ctx.fill();
+                s.x -= s.vel * speed; // Sola doğru axın
+                if(s.x < 0) s.x = canvas.width;
+            });
+            requestAnimationFrame(drawStars);
+        }
+        drawStars();
+
+        // --- PROSES KODU ---
         function startVoyage() {
             document.getElementById('overlay').style.opacity = '0';
+            speed = 3; // Toxunanda ulduzlar sürətlənir (Hyper-jump effekti)
+            
             setTimeout(() => {
                 document.getElementById('overlay').style.display = 'none';
-                document.getElementById('bgVideo').style.filter = 'brightness(0.6) blur(0px)';
-                
-                const music = document.getElementById('passacaglia');
-                music.play();
-                
+                document.getElementById('passacaglia').play();
                 showText(1);
                 runClock();
             }, 2000);
@@ -117,7 +138,7 @@
                         m.style.display = 'none'; 
                         showText(n + 1); 
                     }, 2000);
-                }, 4000);
+                }, 4500);
             }
         }
 
