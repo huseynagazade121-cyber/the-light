@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Sənin üçün...</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #050505;
+            color: white;
+            font-family: 'Georgia', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        #overlay {
+            position: absolute;
+            text-align: center;
+            transition: opacity 2s;
+        }
+
+        #content {
+            display: none;
+            text-align: center;
+            max-width: 80%;
+            line-height: 1.8;
+            font-size: 22px;
+            opacity: 0;
+            transition: opacity 3s;
+        }
+
+        .typewriter {
+            display: inline-block;
+            border-right: 2px solid white;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink { from, to { border-color: transparent } 50% { border-color: white } }
+        
+        #timer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body onclick="startExperience()">
+
+    <div id="overlay">
+        <p>İşığı yandırmaq üçün bir dəfə toxun...</p>
+    </div>
+
+    <div id="content">
+        <div id="text-container"></div>
+        <div id="timer">Sən gedəndən bəri: <span id="seconds">0</span> saniyə keçdi...</div>
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+
+    <script>
+        let started = false;
+        const messages = [
+            "Bakıda hava bəlkə də səs-küylüdür...",
+            "Amma burada, sənin oturduğun partada artıq günəş də eyni cür doğmur.",
+            "Sən gedəndən bəri elə bil sinfin işığı sönüb...",
+            "Bizim bütün enerjimiz səninlə Bakıya köçüb.",
+            "Nə vaxt özünü tənha hiss etsən, bura bax.",
+            "Məsafələr sadəcə rəqəmdir, sən həmişə buradasan."
+        ];
+
+        function startExperience() {
+            if (started) return;
+            started = true;
+
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('overlay').style.display = 'none';
+                const content = document.getElementById('content');
+                content.style.display = 'block';
+                setTimeout(() => content.style.opacity = '1', 100);
+                
+                document.getElementById('bgMusic').play();
+                startTypewriter(0);
+                startCounter();
+            }, 2000);
+        }
+
+        function startTypewriter(index) {
+            if (index < messages.length) {
+                const container = document.getElementById('text-container');
+                container.innerHTML = `<p class="typewriter" id="msg-${index}"></p>`;
+                const msgElement = document.getElementById(`msg-${index}`);
+                let charIndex = 0;
+                
+                const interval = setInterval(() => {
+                    msgElement.textContent += messages[index][charIndex];
+                    charIndex++;
+                    if (charIndex === messages[index].length) {
+                        clearInterval(interval);
+                        setTimeout(() => startTypewriter(index + 1), 3000);
+                    }
+                }, 100);
+            }
+        }
+
+        function startCounter() {
+            let sec = 0;
+            setInterval(() => {
+                sec++;
+                document.getElementById('seconds').innerText = sec;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
