@@ -1,77 +1,169 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <title>Leyla üçün Kosmos Sürprizi 🚀</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background: black;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-    video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
-    }
-    #overlay {
-      position: absolute;
-      top: 20%;
-      width: 100%;
-      text-align: center;
-      font-size: 2em;
-      animation: fadeIn 5s ease-in-out;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    .final {
-      position: absolute;
-      bottom: 10%;
-      width: 100%;
-      text-align: center;
-      font-size: 1.5em;
-      opacity: 0;
-      animation: appear 10s ease-in forwards;
-      animation-delay: 15s;
-    }
-    @keyframes appear {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sinif Kliker Yarışı</title>
+    <style>
+        * {
+            touch-action: manipulation; /* Telefondan klikləyəndə zoom olmasın */
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #1a1a2e, #16213e);
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            overflow: hidden; /* Ekran sürüşməsin */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #game-area {
+            position: relative;
+            width: 100vw;
+            height: 70vh;
+            background: rgba(255, 255, 255, 0.05);
+            margin-top: 20px;
+            border-bottom: 2px solid #0f3460;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #target {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: #e94560;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px #e94560;
+            transition: transform 0.1s;
+        }
+
+        #target:active {
+            transform: scale(0.8);
+        }
+
+        .btn-start {
+            background: #4ecca3;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            color: #1a1a2e;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .father-mode {
+            position: fixed;
+            bottom: 10px;
+            font-size: 0.7rem;
+            color: #555;
+            text-align: center;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-  <!-- Arxa planda kosmos videosu -->
-  <video autoplay muted loop playsinline>
-    <source src="Spaceship Cockpit _ White noise of the Universe _ Deep relaxation _ Space Travel.mp4" type="video/mp4">
-    Brauzer video dəstəkləmir.
-  </video>
 
-  <!-- Musiqi (arxa fon, 10 dəfə təkrar) -->
-  <audio autoplay loop>
-    <source src="clavier-music-passacaglia-classical-calm-piano-background-music-409080.mp3" type="audio/mp3">
-    Brauzer audio dəstəkləmir.
-  </audio>
+    <div class="header">
+        <h1>🎯 Sinif Yarışı</h1>
+        <div class="stats">
+            <div>Xal: <span id="score">0</span></div>
+            <div>Vaxt: <span id="time">30</span></div>
+        </div>
+    </div>
 
-  <!-- İlk yazılar -->
-  <div id="overlay">
-    ✨ Leyla, arzuların ulduzlara qədər uzansın 💫 <br>
-    🚀 Sənin yolun işıqlı və uğurlu olsun 🌌
-  </div>
+    <div id="game-area">
+        <div id="target" style="display: none;">🔥</div>
+    </div>
 
-  <!-- Son mesaj -->
-  <div class="final">
-    Səni sənin və mənim (hamının) arzularına baxmağı baş-başa buraxıram 💖
-  </div>
+    <button class="btn-start" id="start-btn" onclick="startGame()">Oyunu Başlat!</button>
+
+    <div class="father-mode">
+        Mobil interfeys testi v1.0.2 - Sensorların koordinat analizi və JavaScript asinxron dövrləri.
+    </div>
+
+    <script>
+        let score = 0;
+        let time = 30;
+        let timer;
+        const target = document.getElementById('target');
+        const scoreDisplay = document.getElementById('score');
+        const timeDisplay = document.getElementById('time');
+        const startBtn = document.getElementById('start-btn');
+        const gameArea = document.getElementById('game-area');
+
+        function moveTarget() {
+            const areaWidth = gameArea.clientWidth - 70;
+            const areaHeight = gameArea.clientHeight - 70;
+            
+            const randomX = Math.floor(Math.random() * areaWidth);
+            const randomY = Math.floor(Math.random() * areaHeight);
+            
+            target.style.left = randomX + 'px';
+            target.style.top = randomY + 'px';
+        }
+
+        function startGame() {
+            score = 0;
+            time = 30;
+            scoreDisplay.innerText = score;
+            timeDisplay.innerText = time;
+            startBtn.style.display = 'none';
+            target.style.display = 'flex';
+            moveTarget();
+            
+            timer = setInterval(() => {
+                time--;
+                timeDisplay.innerText = time;
+                if (time <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        target.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Telefonlarda sürətli klik üçün
+            score++;
+            scoreDisplay.innerText = score;
+            moveTarget();
+        });
+
+        // Kompüterdən yoxlayanlar üçün
+        target.addEventListener('mousedown', () => {
+            score++;
+            scoreDisplay.innerText = score;
+            moveTarget();
+        });
+
+        function endGame() {
+            clearInterval(timer);
+            target.style.display = 'none';
+            startBtn.style.display = 'block';
+            startBtn.innerText = "Yenidən: " + score + " xal";
+            alert("Oyun bitdi! Sənin xalın: " + score + "\nSinif qrupunda paylaş!");
+        }
+    </script>
 </body>
 </html>
