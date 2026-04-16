@@ -4,79 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* Terminal Efekti Üçün Əsas Stil */
         body {
-            background-color: #0b0000; /* Çox tünd qırmızı-qara fon */
-            color: #ff3333; /* Gözəl, parlaq qırmızı yazı */
-            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: #050000;
+            color: #ff0000;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            padding: 30px;
             overflow: hidden;
+            text-transform: uppercase; /* Terminal havası üçün hərfləri böyük edir */
         }
-        #login { 
-            text-align: center; 
-            border: 1px solid #660000;
-            padding: 40px;
-            border-radius: 10px;
-            background: rgba(20, 0, 0, 0.8);
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);
+
+        /* Ekranın üzərindəki xətlər (CRT Scanlines) */
+        body::before {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
         }
+
+        /* Ekranın titrəmə effekti */
+        #screen {
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            border: 2px solid #440000;
+            background: rgba(15, 0, 0, 0.9);
+            box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.2), 0 0 20px rgba(255, 0, 0, 0.1);
+            position: relative;
+        }
+
+        #login { text-align: left; }
+        
+        .prompt { color: #ff0000; margin-right: 10px; }
+
         input {
             background: transparent;
             border: none;
-            border-bottom: 2px solid #ff3333;
-            color: #fff;
-            padding: 10px;
+            color: #ff0000;
+            font-family: 'Courier New', monospace;
             font-size: 20px;
-            text-align: center;
             outline: none;
-            width: 200px;
-            margin-top: 15px;
+            width: 70%;
         }
+
         #message {
             display: none;
-            width: 100%;
-            max-width: 750px;
-            font-size: 19px;
-            line-height: 1.8;
-            color: #ffcccc; /* Oxunması rahat olsun deyə yazı rəngini bir az yumşaltdıq */
-            text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+            font-size: 18px;
+            line-height: 1.5;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
         }
+
         .cursor {
-            color: #ff3333;
-            font-weight: bold;
-            animation: blink 1s infinite;
+            background: #ff0000;
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
         }
+
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-<div id="login">
-    <div style="font-size: 14px; margin-bottom: 10px; letter-spacing: 2px;">SİSTEMƏ GİRİŞ</div>
-    <input type="text" id="pass" placeholder="..." oninput="start()">
+<div id="screen">
+    <div id="login">
+        <span class="prompt">ROOT@SYSTEM:~#</span>
+        <input type="text" id="pass" placeholder="ENTER ACCESS KEY..." oninput="start()" autofocus>
+    </div>
+    <div id="message"></div>
 </div>
 
-<div id="message"></div>
-
 <script>
-    const text = "Bax dostum, qardaşım...\n\nBəlkə də indiyə qədər heç kim sənə bunları deməyib, amma mən demək istəyirəm. Sən mənim bu həyatda tanıdığım ən düzgün, xarakteri ən möhkəm oğlanlardan birisən. Özünü əsla başqaları ilə müqayisə etmə, sən başqalarından çox fərqlisən.\n\nÜzündəki o xırda-para şeylərə, prişiklərinə görə heç vaxt sıxılma. İnan mənə, bunların hamısı keçicidir, bir müddət sonra heç biri qalmayacaq. Sənin o eynəyin isə sənə zəiflik yox, bir intellektual hava, bir ağırlıq verir. Atan DTX-də, mənimki DSX-də — hər ikimiz hərbiçi övladıyıq, bizim qanımızda dik durmaq var. Sən o uşaqlardan deyilsən ki, hər yetənə söz desin, hər qızın arxasınca qaçsın. Sənin bu 'asosyallığın' əslində sənin ciddiliyindir, hər kəslə bir olmamağındır.\n\nCəmilə məsələsinə gəlincə, heç qorxma. Sən o qızdan əskik deyilsən, əksinə, sənin kimi daxili dünyası zəngin olan birini tanısa, o özü sənə tərəf addım atar. Sən bomba oğlansan, öz biliklərinlə, öz texniki bacarığınla hər kəsə meydan oxuyarsan. Dik dur, eynəyini düzəlt və özünə güvən. Sən tək deyilsən, mən hər zaman yanındayam və sənin arxandayam.\n\nSən mənim dünyada gördüyüm ən yaxşı dostumsan.";
+    const text = "SİSTEMƏ GİRİŞ EDİLDİ...\n----------------------\nBAX DOSTUM, QARDAŞIM...\n\nSƏN MƏNİM TANIDIĞIM ƏN DÜZGÜN VƏ XARAKTERİ MÖHKƏM OĞLANLARDAN BİRİSƏN. ÖZÜNÜ ƏSLA BAŞQALARI İLƏ MÜQAYİSƏ ETMƏ.\n\nPRİJİKLƏRƏ VƏ EYNƏYƏ FİKİR VERMƏ, BUNLAR KEÇİCİDİR. SƏNİN GÜCÜN DAXİLİNDƏDİR. ATAN DTX-DƏ, MƏNİMKİ DSX-DƏ - BİZİM QANIMIZDA DİK DURMAQ VAR.\n\nCƏMİLƏ MƏSƏLƏSİNDƏ DƏ QORXMA. SƏNİN KİMİ BİRİNİ TANISA, HEYRAN QALAR. MƏN HƏMİŞƏ YANINDAYAM.\n\nSƏN MƏNİM ƏN YAXŞI DOSTUMSAN.";
 
     function start() {
         if(document.getElementById('pass').value.toLowerCase() === "dost") {
             document.getElementById('login').style.display = 'none';
             document.getElementById('message').style.display = 'block';
             let i = 0;
+            const target = document.getElementById("message");
+            
             function typing() {
                 if (i < text.length) {
-                    document.getElementById("message").innerHTML += text.charAt(i);
+                    target.innerHTML = text.substring(0, i) + '<span class="cursor"></span>';
                     i++;
-                    setTimeout(typing, 40); 
+                    setTimeout(typing, 40);
                 } else {
-                    document.getElementById("message").innerHTML += '<span class="cursor"> _</span>';
+                    target.innerHTML = text + '<br><br>[SİSTEM BAĞLANDI]<span class="cursor"></span>';
                 }
             }
             typing();
