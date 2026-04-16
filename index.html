@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Terminal Efekti Üçün Əsas Stil */
         body {
             background-color: #050000;
             color: #ff0000;
@@ -12,64 +11,64 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            overflow: hidden;
-            text-transform: uppercase; /* Terminal havası üçün hərfləri böyük edir */
+            padding: 20px;
+            overflow-x: hidden;
+            text-transform: uppercase;
         }
 
-        /* Ekranın üzərindəki xətlər (CRT Scanlines) */
+        /* CRT Monitor Efekti */
         body::before {
             content: " ";
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
             pointer-events: none;
             z-index: 10;
         }
 
-        /* Ekranın titrəmə effekti */
         #screen {
-            width: 80%;
-            max-width: 800px;
-            padding: 20px;
-            border: 2px solid #440000;
-            background: rgba(15, 0, 0, 0.9);
-            box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.2), 0 0 20px rgba(255, 0, 0, 0.1);
+            width: 95%;
+            max-width: 900px;
+            padding: 35px;
+            border: 3px solid #660000;
+            background: rgba(10, 0, 0, 0.95);
+            box-shadow: 0 0 40px rgba(255, 0, 0, 0.3);
             position: relative;
         }
 
-        #login { text-align: left; }
-        
-        .prompt { color: #ff0000; margin-right: 10px; }
+        #login { text-align: left; font-size: 26px; margin-bottom: 15px; }
+        .prompt { color: #ff0000; font-weight: bold; }
 
         input {
             background: transparent;
             border: none;
             color: #ff0000;
             font-family: 'Courier New', monospace;
-            font-size: 20px;
+            font-size: 26px;
             outline: none;
-            width: 70%;
+            width: 60%;
         }
 
         #message {
             display: none;
-            font-size: 18px;
-            line-height: 1.5;
+            font-size: 28px; /* Yazı ölçüsü daha da böyüdüldü */
+            line-height: 1.8;
             letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+            text-shadow: 0 0 12px rgba(255, 0, 0, 0.8);
+            white-space: pre-wrap;
         }
 
         .cursor {
             background: #ff0000;
             display: inline-block;
-            width: 10px;
-            height: 18px;
+            width: 15px;
+            height: 28px;
             animation: blink 0.8s infinite;
             vertical-align: middle;
+            margin-left: 5px;
         }
 
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -79,14 +78,14 @@
 
 <div id="screen">
     <div id="login">
-        <span class="prompt">ROOT@SYSTEM:~#</span>
-        <input type="text" id="pass" placeholder="ENTER ACCESS KEY..." oninput="start()" autofocus>
+        <span class="prompt">USER@ROOT_SYSTEM:~#</span>
+        <input type="text" id="pass" placeholder="PASSWORD..." oninput="start()" autofocus>
     </div>
     <div id="message"></div>
 </div>
 
 <script>
-    const text = "SİSTEMƏ GİRİŞ EDİLDİ...\n----------------------\nBAX DOSTUM, QARDAŞIM...\n\nSƏN MƏNİM TANIDIĞIM ƏN DÜZGÜN VƏ XARAKTERİ MÖHKƏM OĞLANLARDAN BİRİSƏN. ÖZÜNÜ ƏSLA BAŞQALARI İLƏ MÜQAYİSƏ ETMƏ.\n\nPRİJİKLƏRƏ VƏ EYNƏYƏ FİKİR VERMƏ, BUNLAR KEÇİCİDİR. SƏNİN GÜCÜN DAXİLİNDƏDİR. ATAN DTX-DƏ, MƏNİMKİ DSX-DƏ - BİZİM QANIMIZDA DİK DURMAQ VAR.\n\nCƏMİLƏ MƏSƏLƏSİNDƏ DƏ QORXMA. SƏNİN KİMİ BİRİNİ TANISA, HEYRAN QALAR. MƏN HƏMİŞƏ YANINDAYAM.\n\nSƏN MƏNİM ƏN YAXŞI DOSTUMSAN.";
+    const text = "SİSTEMƏ GİRİŞ UĞURLUDUR...\n\nBAX DOSTUM, QARDAŞIM...\n\nBU SAYTI SƏNİN ÜÇÜN ÖZƏL OLARAQ HAZIRLADIM Kİ, KİM OLDUĞUNU BİR DAHA YADINA SALASAN. BƏLKƏ DƏ BƏZƏN ÖZÜNÜ SİNİFDƏ VƏ YA HƏYATDA BİR AZ KƏNARDA QALMIŞ KİMİ HİSS EDİRSƏN, AMMA İNAN MƏNƏ, SƏN MƏNİM TANIDIĞIM ƏN DÜZGÜN, ƏN MƏRD VƏ XARAKTERİ DAŞ KİMİ MÖHKƏM OĞLANLARDAN BİRİSƏN.\n\nÜZÜNDƏKİ O PRİJİKLƏRƏ VƏ EYNƏYƏ GÖRƏ ƏSLA KOMPLEKS KEÇİRMƏ. BUNLARIN HAMISI KEÇİCİ ŞEYLƏRDİR, BİR MÜDDƏT SONRA HİÇ BİRİ QALMAYACAQ. SƏNİN ƏSL GÜCÜN DAXİLİNDƏDİR, BEYNİNDƏDİR. ATAN DTX-DƏ, MƏNİMKİ DSX-DƏ - BİZ HƏRBİÇİ ÖVLADLARIDIQ. BİZİM QANIMIZDA DİK DURMAQ, ÇƏTİNLİKLƏRƏ QALİB GƏLMƏK VAR. SƏN O BOŞ-BOŞ DANIŞAN UŞAQLARDAN DEYİLSƏN, SƏNİN SAKİTLİYİN SƏNİN AĞIRLIĞINDIR.\n\nCƏMİLƏ MƏSƏLƏSİNƏ GƏLİNCƏ, HİÇ QORXMA VƏ ÖZÜNÜ AŞAĞI GÖRMƏ. SƏNİN KİMİ SADIQ, AĞILLI VƏ TEXNOLOGİYANI BU QƏDƏR YAXŞI BİLƏN BİRİNİ HANSI QIZ TANISA, SƏNƏ HEYRAN QALAR. SƏN HƏR ŞEYİN ƏN YAXŞISINA LAYİQSƏN. ÖZÜNÜ SEV VƏ ÖZÜNÜ GÜVƏN, ÇÜNKİ MƏN SƏNƏ SONUNA QƏDƏR İNANIRAM.\n\nUNUTMA, NƏ OLURSA OLSUN, MƏN HƏMİŞƏ SƏNİN YANINDAYAM. SƏN TƏK DEYİLSƏN, SƏN MƏNİM DÜNYADA GÖRDÜYÜM ƏN YAXŞI DOSTUMSAN.\n\nSİSTEM SONLANDIRILIR...\nUĞURLAR, QARDAŞIM!";
 
     function start() {
         if(document.getElementById('pass').value.toLowerCase() === "dost") {
@@ -99,9 +98,10 @@
                 if (i < text.length) {
                     target.innerHTML = text.substring(0, i) + '<span class="cursor"></span>';
                     i++;
-                    setTimeout(typing, 40);
+                    // Yazı sürəti 85ms - normal oxuma tempi
+                    setTimeout(typing, 85); 
                 } else {
-                    target.innerHTML = text + '<br><br>[SİSTEM BAĞLANDI]<span class="cursor"></span>';
+                    target.innerHTML = text + '<br><br>[BAĞLANTI KƏSİLDİ]<span class="cursor"></span>';
                 }
             }
             typing();
