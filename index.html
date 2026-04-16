@@ -2,189 +2,68 @@
 <html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sinif Kliker Yarışı</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        * {
-            touch-action: manipulation;
-            user-select: none;
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            padding: 0;
-            background: radial-gradient(circle, #1a1a2e, #16213e);
-            font-family: 'Segoe UI', sans-serif;
-            color: white;
-            overflow: hidden;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Consolas', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0;
+            padding: 30px;
+            overflow-y: auto;
         }
-
-        .header {
-            height: 15vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        h1 { font-size: 1.4rem; margin: 5px 0; color: #4ecca3; }
-
-        .stats {
-            display: flex;
-            gap: 30px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        #game-area {
-            position: relative;
-            width: 90vw;
-            height: 60vh; /* Ekranın 60%-i qədər sahə */
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px dashed #0f3460;
-            border-radius: 20px;
-            margin: 10px 0;
-        }
-
-        #target {
-            position: absolute;
-            width: 65px;
-            height: 65px;
-            background: #e94560;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            cursor: pointer;
-            box-shadow: 0 0 20px #e94560;
-            z-index: 5;
-        }
-
-        .btn-start {
-            background: #4ecca3;
+        #login { text-align: center; }
+        input {
+            background: transparent;
             border: none;
-            padding: 15px 50px;
-            border-radius: 30px;
-            color: #1a1a2e;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(78, 204, 163, 0.4);
-            transition: 0.2s;
+            border-bottom: 2px solid #222;
+            color: #fff;
+            padding: 10px;
+            font-size: 20px;
+            text-align: center;
+            outline: none;
         }
-
-        .btn-start:active { transform: scale(0.95); }
-
-        /* Formspree üçün gizli forma */
-        #hidden-form { display: none; }
-
-        .father-mode {
-            height: 5vh;
-            font-size: 0.65rem;
-            color: #475569;
-            padding-top: 5px;
+        #message {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            font-size: 19px;
+            line-height: 1.8;
+            color: #e0e0e0;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>🎯 Sinif Yarışı</h1>
-        <div class="stats">
-            <div>Xal: <span id="score">0</span></div>
-            <div>Vaxt: <span id="time">30</span></div>
-        </div>
-    </div>
+<div id="login">
+    <input type="text" id="pass" placeholder="Şifrəni yaz..." oninput="start()">
+</div>
 
-    <div id="game-area">
-        <div id="target">🔥</div>
-        <div style="display: flex; height: 100%; align-items: center; justify-content: center;">
-            <button class="btn-start" id="start-btn" onclick="startGame()">OYUNA BAŞLA</button>
-        </div>
-    </div>
+<div id="message"></div>
 
-    <div class="father-mode">
-        v2.0.1 - Coordinate Logic Optimization & Asynchronous Data Transfer
-    </div>
+<script>
+    const text = "Bax dostum, qardaşım...\n\nBəlkə də indiyə qədər heç kim sənə bunları deməyib, amma mən demək istəyirəm. Sən mənim bu həyatda tanıdığım ən düzgün, xarakteri ən möhkəm oğlanlardan birisən. Özünü əsla başqaları ilə müqayisə etmə, sən başqalarından çox fərqlisən.\n\nÜzündəki o xırda-para şeylərə, prişiklərinə görə heç vaxt sıxılma. İnan mənə, bunların hamısı keçicidir, bir müddət sonra heç biri qalmayacaq. Sənin o eynəyin isə sənə zəiflik yox, bir intellektual hava, bir ağırlıq verir. Atan DTX-də, mənimki DSX-də — hər ikimiz hərbiçi övladıyıq, bizim qanımızda dik durmaq var. Sən o uşaqlardan deyilsən ki, hər yetənə söz desin, hər qızın arxasınca qaçsın. Sənin bu 'asosyallığın' əslində sənin ciddiliyindir, hər kəslə bir olmamağındır.\n\nCəmilə məsələsinə gəlincə, heç qorxma. Sən o qızdan əskik deyilsən, əksinə, sənin kimi daxili dünyası zəngin olan birini tanısa, o özü sənə tərəf addım atar. Sən bomba oğlansan, öz biliklərinlə, öz texniki bacarığınla hər kəsə meydan oxuyarsan. Dik dur, eynəyini düzəlt və özünə güvən. Sən tək deyilsən, mən hər zaman yanındayam və sənin arxandayam.\n\nSən mənim dünyada gördüyüm ən yaxşı dostumsan.";
 
-    <form id="hidden-form" action="https://formspree.io/f/xvzbblgr" method="POST">
-        <input type="hidden" name="Oyunçu_Xalı" id="form-score">
-        <input type="hidden" name="Mesaj" value="Yeni bir rekord qırıldı!">
-    </form>
-
-    <script>
-        let score = 0;
-        let time = 30;
-        let timer;
-        const target = document.getElementById('target');
-        const scoreDisplay = document.getElementById('score');
-        const timeDisplay = document.getElementById('time');
-        const startBtn = document.getElementById('start-btn');
-        const gameArea = document.getElementById('game-area');
-        const formScore = document.getElementById('form-score');
-        const hiddenForm = document.getElementById('hidden-form');
-
-        function moveTarget() {
-            const areaWidth = gameArea.clientWidth - 70;
-            const areaHeight = gameArea.clientHeight - 70;
-            
-            const randomX = Math.floor(Math.random() * areaWidth);
-            const randomY = Math.floor(Math.random() * areaHeight);
-            
-            target.style.left = randomX + 'px';
-            target.style.top = randomY + 'px';
-        }
-
-        function startGame() {
-            score = 0;
-            time = 30;
-            scoreDisplay.innerText = score;
-            timeDisplay.innerText = time;
-            startBtn.style.display = 'none';
-            target.style.display = 'flex';
-            moveTarget();
-            
-            timer = setInterval(() => {
-                time--;
-                timeDisplay.innerText = time;
-                if (time <= 0) {
-                    endGame();
+    function start() {
+        if(document.getElementById('pass').value.toLowerCase() === "dost") {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('message').style.display = 'block';
+            let i = 0;
+            function typing() {
+                if (i < text.length) {
+                    document.getElementById("message").innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typing, 45); // Yazı sürəti
                 }
-            }, 1000);
+            }
+            typing();
         }
+    }
+</script>
 
-        function handleHit(e) {
-            if (e) e.preventDefault();
-            score++;
-            scoreDisplay.innerText = score;
-            moveTarget();
-        }
-
-        target.addEventListener('touchstart', handleHit);
-        target.addEventListener('mousedown', handleHit);
-
-        function endGame() {
-            clearInterval(timer);
-            target.style.display = 'none';
-            startBtn.style.display = 'block';
-            startBtn.innerText = "Yenidən: " + score + " xal";
-            
-            // Xalı formaya yaz və avtomatik göndər
-            formScore.value = score;
-            
-            alert("Oyun bitdi! Xalın: " + score + "\nRekordun qeydə alındı!");
-            
-            // İstəsən aşağıdakı sətri silə bilərsən ki, hər dəfə email gəlməsin.
-            // Amma uşaqlar "Göndər" basmadan da sənə məlumat gəlsin deyə bunu saxladım:
-            // hiddenForm.submit(); 
-        }
-    </script>
 </body>
 </html>
